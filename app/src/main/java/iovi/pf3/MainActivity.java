@@ -6,11 +6,16 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity
+implements PlayerGuessFragment.GuessListener{
 
-    //FragmentTransaction transaction;
+    List<String> answers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,14 +38,24 @@ public class MainActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_newgame) {
+
+            answers=new ArrayList<>();
             FragmentTransaction transaction=getFragmentManager().beginTransaction();
             Fragment topFragment=new PlayerGuessFragment();
             Fragment bottomFragment=new AnswersFragment();
             transaction.add(R.id.topFrame,topFragment);
-            transaction.add(R.id.bottomFrame,bottomFragment);
+            transaction.add(R.id.bottomFrame, bottomFragment);
             transaction.commit();
         }
-
+        if (id == R.id.action_settings) {
+            AnswersFragment answersFragment = (AnswersFragment)getFragmentManager().findFragmentById(R.id.bottomFrame);
+            answersFragment.AddAnswer("Vasya");
+        }
         return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public void guessMade(String guess){
+        AnswersFragment answersFragment = (AnswersFragment)getFragmentManager().findFragmentById(R.id.bottomFrame);
+        answersFragment.AddAnswer(guess);
     }
 }

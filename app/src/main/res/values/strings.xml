@@ -4,6 +4,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="action_newgame">New Game</string>
-    <string name="button_quest">GUESS</string>
+    <string name="button_quest">"?"</string>
     <string name="answers">Answers</string>
 </resources>

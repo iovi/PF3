@@ -6,7 +6,7 @@
     <EditText android:id="@+id/guess_edit"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"/>
-    <Button
+    <Button android:id="@+id/guess_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
