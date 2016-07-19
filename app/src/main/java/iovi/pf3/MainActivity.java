@@ -1,5 +1,7 @@
 package iovi.pf3;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -7,6 +9,8 @@ import android.view.MenuItem;
 
 
 public class MainActivity extends ActionBarActivity {
+
+    //FragmentTransaction transaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +32,13 @@ public class MainActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_newgame) {
+            FragmentTransaction transaction=getFragmentManager().beginTransaction();
+            Fragment topFragment=new PlayerGuessFragment();
+            Fragment bottomFragment=new AnswersFragment();
+            transaction.add(R.id.topFrame,topFragment);
+            transaction.add(R.id.bottomFrame,bottomFragment);
+            transaction.commit();
         }
 
         return super.onOptionsItemSelected(item);
