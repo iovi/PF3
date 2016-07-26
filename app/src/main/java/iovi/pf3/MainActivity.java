@@ -8,6 +8,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,12 +18,24 @@ public class MainActivity extends ActionBarActivity
 implements PlayerGuessFragment.GuessListener{
 
     List<String> answers;
+    SinglePlayerGame game;
+    int wordlength=4;
+    ArrayList<String> dictionary;
+    DataBaseHelper dbHelper;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        dbHelper=new DataBaseHelper(this);
+        try{
+            dbHelper.createDataBase();
+        } catch (IOException e){
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -39,7 +53,14 @@ implements PlayerGuessFragment.GuessListener{
 
         if (id == R.id.action_newgame) {
 
+            dbHelper.close();
+            try{
+                dbHelper.openDataBase();
+            } catch (SQLException e){
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
             answers=new ArrayList<>();
+            game=new SinglePlayerGame(dictionary,wordlength);
             FragmentTransaction transaction=getFragmentManager().beginTransaction();
             Fragment topFragment=new PlayerGuessFragment();
             Fragment bottomFragment=new AnswersFragment();
@@ -48,8 +69,14 @@ implements PlayerGuessFragment.GuessListener{
             transaction.commit();
         }
         if (id == R.id.action_settings) {
-            AnswersFragment answersFragment = (AnswersFragment)getFragmentManager().findFragmentById(R.id.bottomFrame);
-            answersFragment.AddAnswer("Vasya");
+            //AnswersFragment answersFragment = (AnswersFragment)getFragmentManager().findFragmentById(R.id.bottomFrame);
+            //answersFragment.AddAnswer("Vasya");
+            try{
+                dictionary=dbHelper.getDictionary(4);
+            } catch (SQLException e){
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+            Toast.makeText(this, dictionary.size(), Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }

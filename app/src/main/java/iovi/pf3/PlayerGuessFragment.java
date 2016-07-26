@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Created by Iovi on 06.09.2015.
@@ -21,7 +22,7 @@ public class PlayerGuessFragment extends Fragment {
     GuessListener mCallback;
 
     public interface GuessListener {
-        public void guessMade(String guess);
+        void guessMade(String guess);
     }
 
     @Override
@@ -31,8 +32,7 @@ public class PlayerGuessFragment extends Fragment {
         try {
             mCallback = (GuessListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnHeadlineSelectedListener");
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
