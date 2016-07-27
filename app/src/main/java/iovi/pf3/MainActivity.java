@@ -29,11 +29,22 @@ implements PlayerGuessFragment.GuessListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         dbHelper=new DataBaseHelper(this);
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
         try{
-            dbHelper.createDataBase();
-        } catch (IOException e){
+            dbHelper.openDataBase();
+        } catch (SQLException e){
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        dbHelper.close();
     }
 
 
@@ -73,10 +84,11 @@ implements PlayerGuessFragment.GuessListener{
             //answersFragment.AddAnswer("Vasya");
             try{
                 dictionary=dbHelper.getDictionary(4);
+                Toast.makeText(this, Integer.toString(dictionary.size()), Toast.LENGTH_SHORT).show();
             } catch (SQLException e){
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
-            Toast.makeText(this, dictionary.size(), Toast.LENGTH_SHORT).show();
+
         }
         return super.onOptionsItemSelected(item);
     }
