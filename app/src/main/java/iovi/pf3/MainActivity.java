@@ -4,11 +4,11 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +22,7 @@ implements PlayerGuessFragment.GuessListener{
     int wordlength=4;
     ArrayList<String> dictionary;
     DataBaseHelper dbHelper;
+    final static String TAG="PF3";
 
 
     @Override
@@ -33,12 +34,13 @@ implements PlayerGuessFragment.GuessListener{
 
     @Override
     protected void onStart(){
-        super.onStart();
         try{
+            dbHelper.createDataBase();
             dbHelper.openDataBase();
-        } catch (SQLException e){
+        } catch (Exception e){
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
+        super.onStart();
     }
 
     @Override
@@ -50,7 +52,7 @@ implements PlayerGuessFragment.GuessListener{
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        Log.v(TAG,"oncreateoptions");
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -63,13 +65,6 @@ implements PlayerGuessFragment.GuessListener{
         int id = item.getItemId();
 
         if (id == R.id.action_newgame) {
-
-            dbHelper.close();
-            try{
-                dbHelper.openDataBase();
-            } catch (SQLException e){
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
             answers=new ArrayList<>();
             game=new SinglePlayerGame(dictionary,wordlength);
             FragmentTransaction transaction=getFragmentManager().beginTransaction();
