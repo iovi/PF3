@@ -40,9 +40,16 @@ public class SinglePlayerGame {
         questionAI.RemoveWord(word);
     }
 
-    public Answer CheckPlayerGuess(String word){
+    public Answer AnswerPlayerGuess(String word){
         Answer answer=answerAI.GetAnswer(word);
         guessesPlayer++;
         return answer;
+    }
+    public String CheckPlayerGuess(String word){
+        if (word.length()!=wordLength)
+            return "Your guess should be " + Integer.toString(wordLength)+" letters length!";
+        if (dict.indexOf(word)==-1)
+            return "There is no such word, make another guess!";
+        return null;
     }
 }

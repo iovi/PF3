@@ -1,5 +1,6 @@
 package iovi.pf3;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
@@ -37,6 +38,8 @@ implements PlayerGuessFragment.GuessListener{
         try{
             dbHelper.createDataBase();
             dbHelper.openDataBase();
+            dictionary=dbHelper.getDictionary(wordlength);
+            game=new SinglePlayerGame(dictionary,wordlength);
         } catch (Exception e){
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
@@ -52,7 +55,6 @@ implements PlayerGuessFragment.GuessListener{
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.v(TAG,"oncreateoptions");
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -66,7 +68,7 @@ implements PlayerGuessFragment.GuessListener{
 
         if (id == R.id.action_newgame) {
             answers=new ArrayList<>();
-            game=new SinglePlayerGame(dictionary,wordlength);
+            game.NewGame();
             FragmentTransaction transaction=getFragmentManager().beginTransaction();
             Fragment topFragment=new PlayerGuessFragment();
             Fragment bottomFragment=new AnswersFragment();
@@ -75,10 +77,9 @@ implements PlayerGuessFragment.GuessListener{
             transaction.commit();
         }
         if (id == R.id.action_settings) {
-            //AnswersFragment answersFragment = (AnswersFragment)getFragmentManager().findFragmentById(R.id.bottomFrame);
-            //answersFragment.AddAnswer("Vasya");
+            //set word length code
             try{
-                dictionary=dbHelper.getDictionary(4);
+                dictionary=dbHelper.getDictionary(wordlength);
                 Toast.makeText(this, Integer.toString(dictionary.size()), Toast.LENGTH_SHORT).show();
             } catch (SQLException e){
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -89,7 +90,17 @@ implements PlayerGuessFragment.GuessListener{
     }
     @Override
     public void guessMade(String guess){
-        AnswersFragment answersFragment = (AnswersFragment)getFragmentManager().findFragmentById(R.id.bottomFrame);
-        answersFragment.AddAnswer(guess);
+        String check=game.CheckPlayerGuess(guess);
+        if (check!=null) {
+            AlertDialog.Builder dialog  = new AlertDialog.Builder(this);
+            dialog.setMessage(check);
+            dialog.setPositiveButton("OK", null);
+            dialog.create().show();
+        } else {
+            AnswersFragment answersFragment = (AnswersFragment) getFragmentManager().findFragmentById(R.id.bottomFrame);
+            Answer a=game.AnswerPlayerGuess(guess);
+            answersFragment.AddAnswer(guess + " - " + SinglePlayerGame.PrettyAnswer(a));
+        }
     }
+
 }
