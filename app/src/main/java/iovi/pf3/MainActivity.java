@@ -90,17 +90,25 @@ implements PlayerGuessFragment.GuessListener{
     }
     @Override
     public void guessMade(String guess){
-        String check=game.CheckPlayerGuess(guess);
+        /*String check=game.CheckPlayerGuess(guess);
         if (check!=null) {
             AlertDialog.Builder dialog  = new AlertDialog.Builder(this);
             dialog.setMessage(check);
             dialog.setPositiveButton("OK", null);
             dialog.create().show();
-        } else {
+        } else {*/
             AnswersFragment answersFragment = (AnswersFragment) getFragmentManager().findFragmentById(R.id.bottomFrame);
             Answer a=game.AnswerPlayerGuess(guess);
             answersFragment.AddAnswer(guess + " - " + SinglePlayerGame.PrettyAnswer(a));
-        }
+
+        FragmentTransaction transaction=getFragmentManager().beginTransaction();
+        Fragment topFragment=new PlayerAnswerFragment();
+        Bundle args=new Bundle();
+        args.putString("word", game.GetAIGuess());
+        topFragment.setArguments(args);
+        transaction.replace(R.id.topFrame,topFragment);
+        transaction.commit();
+        //}
     }
 
 }
