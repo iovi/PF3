@@ -18,29 +18,31 @@
         android:layout_height="wrap_content"
         android:textSize="10pt"
         android:layout_weight="1"
-        android:layout_marginLeft="10dp"
         android:text="P" />
     <Spinner
         android:id="@+id/f_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
         android:layout_weight="1"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="10pt"
-        android:layout_marginLeft="10dp"
         android:layout_weight="1"
         android:text="F" />
-    <Button android:id="@+id/answer_ok_button"
-        android:layout_width="wrap_content"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:text="@string/button_ok" />
-    <Button android:id="@+id/delete_guess_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:text="@string/button_delete" />
+        android:layout_width="wrap_content">
+        <Button android:id="@+id/answer_ok_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="@string/button_ok" />
+        <Button android:id="@+id/delete_guess_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="@string/button_delete" />
+    </LinearLayout>
 </LinearLayout>

@@ -16,7 +16,7 @@ import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity
-implements PlayerGuessFragment.GuessListener{
+implements PlayerGuessFragment.GuessListener, PlayerAnswerFragment.AnswerListener{
 
     List<String> answers;
     SinglePlayerGame game;
@@ -90,8 +90,8 @@ implements PlayerGuessFragment.GuessListener{
     }
     @Override
     public void guessMade(String guess){
-        /*String check=game.CheckPlayerGuess(guess);
-        if (check!=null) {
+        String check=game.CheckPlayerGuess(guess);
+        /*if (check!=null) {
             AlertDialog.Builder dialog  = new AlertDialog.Builder(this);
             dialog.setMessage(check);
             dialog.setPositiveButton("OK", null);
@@ -101,6 +101,22 @@ implements PlayerGuessFragment.GuessListener{
             Answer a=game.AnswerPlayerGuess(guess);
             answersFragment.AddAnswer(guess + " - " + SinglePlayerGame.PrettyAnswer(a));
 
+            initPlayerAnswerFragment();
+        //}
+    }
+
+    @Override
+    public void AnswerOK(String guess,Answer answer){
+        game.AnswerToAI(guess,answer);
+        initPlayerGuessFragment();
+
+    }
+    @Override
+    public void DeleteGuess(String guess){
+        game.MakeAIForget(guess);
+        initPlayerAnswerFragment();
+    }
+    private void initPlayerAnswerFragment(){
         FragmentTransaction transaction=getFragmentManager().beginTransaction();
         Fragment topFragment=new PlayerAnswerFragment();
         Bundle args=new Bundle();
@@ -109,7 +125,11 @@ implements PlayerGuessFragment.GuessListener{
         topFragment.setArguments(args);
         transaction.replace(R.id.topFrame,topFragment);
         transaction.commit();
-        //}
     }
-
+    private void initPlayerGuessFragment(){
+        FragmentTransaction transaction=getFragmentManager().beginTransaction();
+        Fragment topFragment=new PlayerGuessFragment();
+        transaction.replace(R.id.topFrame,topFragment);
+        transaction.commit();
+    }
 }

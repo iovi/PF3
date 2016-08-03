@@ -22,7 +22,14 @@ import java.util.List;
  */
 public class PlayerAnswerFragment extends Fragment {
 
+
+    public interface AnswerListener {
+        void AnswerOK(String guess,Answer answer);
+        void DeleteGuess(String guess);
+    }
+
     final static String TAG="PF3";
+    AnswerListener mCallback;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
@@ -36,10 +43,30 @@ public class PlayerAnswerFragment extends Fragment {
         ArrayAdapter<String> pSpinnerAdapter=new ArrayAdapter<String>(getActivity(),R.layout.spinner_item,variants);
         pSpinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
 
-        Spinner pSpinner= (Spinner)view.findViewById(R.id.p_spinner);
+        final Spinner pSpinner= (Spinner)view.findViewById(R.id.p_spinner);
         pSpinner.setAdapter(pSpinnerAdapter);
-        Spinner fSpinner= (Spinner)view.findViewById(R.id.f_spinner);
+        final Spinner fSpinner= (Spinner)view.findViewById(R.id.f_spinner);
         fSpinner.setAdapter(pSpinnerAdapter);
+
+        //setup buttons listeners
+        final TextView text=(TextView)view.findViewById(R.id.outgoingGuess);
+        Button buttonOK=(Button)view.findViewById(R.id.answer_ok_button);
+        buttonOK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int p=Integer.parseInt(pSpinner.getSelectedItem().toString());
+                int f=Integer.parseInt(fSpinner.getSelectedItem().toString());
+                Answer answer=new Answer(p,f);
+                mCallback.AnswerOK(text.getText().toString(),answer);
+            }
+        });
+        Button buttonDelete=(Button)view.findViewById(R.id.delete_guess_button);
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCallback.DeleteGuess(text.getText().toString());
+            }
+        });
 
         return view;
     }
