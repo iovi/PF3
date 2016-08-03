@@ -6,4 +6,6 @@
     <string name="action_newgame">New Game</string>
     <string name="button_quest">"?"</string>
     <string name="answers">Answers</string>
+    <string name="button_ok">OK</string>
+    <string name="button_delete">No such word</string>
 </resources>

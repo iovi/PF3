@@ -105,6 +105,7 @@ implements PlayerGuessFragment.GuessListener{
         Fragment topFragment=new PlayerAnswerFragment();
         Bundle args=new Bundle();
         args.putString("word", game.GetAIGuess());
+        args.putInt("wordlength", wordlength);
         topFragment.setArguments(args);
         transaction.replace(R.id.topFrame,topFragment);
         transaction.commit();
