@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">PF3</string>
 
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="action_newgame">New Game</string>
     <string name="button_quest">"?"</string>
     <string name="answers">Answers</string>
     <string name="button_ok">OK</string>
     <string name="button_delete">No such word</string>
+    <string name="settings_wordlength">The word length:</string>
 </resources>

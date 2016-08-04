@@ -3,13 +3,11 @@ package iovi.pf3;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,7 +31,7 @@ public class PlayerAnswerFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-        View view= inflater.inflate(R.layout.playeranswer, null);
+        View view= inflater.inflate(R.layout.player_answer, null);
 
         //preparing spinners
         List<String> variants=new ArrayList<>();
@@ -42,11 +40,13 @@ public class PlayerAnswerFragment extends Fragment {
 
         ArrayAdapter<String> pSpinnerAdapter=new ArrayAdapter<String>(getActivity(),R.layout.spinner_item,variants);
         pSpinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
+        ArrayAdapter<String> fSpinnerAdapter=new ArrayAdapter<String>(getActivity(),R.layout.spinner_item,variants);
+        fSpinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
 
         final Spinner pSpinner= (Spinner)view.findViewById(R.id.p_spinner);
         pSpinner.setAdapter(pSpinnerAdapter);
         final Spinner fSpinner= (Spinner)view.findViewById(R.id.f_spinner);
-        fSpinner.setAdapter(pSpinnerAdapter);
+        fSpinner.setAdapter(fSpinnerAdapter);
 
         //setup buttons listeners
         final TextView text=(TextView)view.findViewById(R.id.outgoingGuess);

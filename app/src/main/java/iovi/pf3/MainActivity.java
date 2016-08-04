@@ -3,11 +3,15 @@ package iovi.pf3;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.sql.SQLException;
@@ -69,21 +73,21 @@ implements PlayerGuessFragment.GuessListener, PlayerAnswerFragment.AnswerListene
         if (id == R.id.action_newgame) {
             answers=new ArrayList<>();
             game.NewGame();
-            FragmentTransaction transaction=getFragmentManager().beginTransaction();
+            /*FragmentTransaction transaction=getFragmentManager().beginTransaction();
             Fragment topFragment=new PlayerGuessFragment();
             Fragment bottomFragment=new AnswersFragment();
             transaction.add(R.id.topFrame,topFragment);
             transaction.add(R.id.bottomFrame, bottomFragment);
-            transaction.commit();
+            transaction.commit();*/
+            initPlayerGuessFragment();
+            initAnswersFragment();
         }
         if (id == R.id.action_settings) {
             //set word length code
-            try{
-                dictionary=dbHelper.getDictionary(wordlength);
-                Toast.makeText(this, Integer.toString(dictionary.size()), Toast.LENGTH_SHORT).show();
-            } catch (SQLException e){
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
+            initSettingsDialog();
+            game.NewGame();
+            initPlayerGuessFragment();
+            initAnswersFragment();
 
         }
         return super.onOptionsItemSelected(item);
@@ -91,23 +95,23 @@ implements PlayerGuessFragment.GuessListener, PlayerAnswerFragment.AnswerListene
     @Override
     public void guessMade(String guess){
         String check=game.CheckPlayerGuess(guess);
-        /*if (check!=null) {
+        if (check!=null) {
             AlertDialog.Builder dialog  = new AlertDialog.Builder(this);
             dialog.setMessage(check);
             dialog.setPositiveButton("OK", null);
             dialog.create().show();
-        } else {*/
+        } else {
             AnswersFragment answersFragment = (AnswersFragment) getFragmentManager().findFragmentById(R.id.bottomFrame);
             Answer a=game.AnswerPlayerGuess(guess);
             answersFragment.AddAnswer(guess + " - " + SinglePlayerGame.PrettyAnswer(a));
 
             initPlayerAnswerFragment();
-        //}
+        }
     }
 
     @Override
     public void AnswerOK(String guess,Answer answer){
-        game.AnswerToAI(guess,answer);
+        game.AnswerToAI(guess, answer);
         initPlayerGuessFragment();
 
     }
@@ -123,7 +127,7 @@ implements PlayerGuessFragment.GuessListener, PlayerAnswerFragment.AnswerListene
         args.putString("word", game.GetAIGuess());
         args.putInt("wordlength", wordlength);
         topFragment.setArguments(args);
-        transaction.replace(R.id.topFrame,topFragment);
+        transaction.replace(R.id.topFrame, topFragment);
         transaction.commit();
     }
     private void initPlayerGuessFragment(){
@@ -131,5 +135,31 @@ implements PlayerGuessFragment.GuessListener, PlayerAnswerFragment.AnswerListene
         Fragment topFragment=new PlayerGuessFragment();
         transaction.replace(R.id.topFrame,topFragment);
         transaction.commit();
+    }
+    private void initAnswersFragment(){
+        FragmentTransaction transaction=getFragmentManager().beginTransaction();
+        Fragment bottomFragment=new AnswersFragment();
+        transaction.replace(R.id.bottomFrame, bottomFragment);
+        transaction.commit();
+    }
+
+    private void initSettingsDialog() {
+
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+        View settingsView = layoutInflater.inflate(R.layout.settings, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setView(settingsView);
+
+        final EditText editText = (EditText) settingsView.findViewById(R.id.settings_wordlength_edit);
+
+        alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                String wordlengthString=editText.getText().toString();
+                wordlength = Integer.parseInt(wordlengthString);
+            }
+        });
+        // create an alert dialog
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
     }
 }

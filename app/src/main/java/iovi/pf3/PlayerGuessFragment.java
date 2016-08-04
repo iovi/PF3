@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -41,7 +40,7 @@ public class PlayerGuessFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 
-        View view= inflater.inflate(R.layout.playerguess, null);
+        View view= inflater.inflate(R.layout.player_guess, null);
         Button button=(Button)view.findViewById(R.id.guess_button);
         final EditText edit=(EditText)view.findViewById(R.id.guess_edit);
         button.setOnClickListener(new View.OnClickListener()
