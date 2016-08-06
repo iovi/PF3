@@ -82,10 +82,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         String path = DB_PATH + DB_NAME;
 
         File file = new File(path);
-        if (!file.exists())
-            Log.v(TAG,"not exists :(");
         db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READONLY);
-        Log.v(TAG,"opening done!");
     }
 
     public ArrayList<String> getDictionary(int wordlength) throws SQLException {

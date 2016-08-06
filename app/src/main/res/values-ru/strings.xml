@@ -9,4 +9,9 @@
     <string name="button_ok">OK</string>
     <string name="button_delete">Другое слово</string>
     <string name="settings_wordlength">Длина слова:</string>
+    <string name="error_no_such_word">Такого слова нет в словаре. Попробуйте другое!</string>
+    <string name="error_wrong_length">Слово должно состоять из %1$d букв!</string>
+    <string name="status_AI_wins">Примите соболезнования, вы проиграли</string>
+    <string name="status_player_wins">Примите поздравления, вы проиграли!</string>
+    <string name="status_draw">Ничья!</string>
 </resources>

@@ -8,4 +8,9 @@
     <string name="button_ok">OK</string>
     <string name="button_delete">No such word</string>
     <string name="settings_wordlength">The word length:</string>
+    <string name="error_no_such_word">There is no such word. Make another guess!</string>
+    <string name="error_wrong_length">The word must be %1$d letters length!</string>
+    <string name="status_AI_wins">Sorry, you lose!</string>
+    <string name="status_player_wins">Congratulations, you win!</string>
+    <string name="status_draw">A draw!!</string>
 </resources>

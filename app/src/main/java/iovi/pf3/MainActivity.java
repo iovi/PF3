@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.List;
 
 
@@ -43,7 +44,7 @@ implements PlayerGuessFragment.GuessListener, PlayerAnswerFragment.AnswerListene
             dbHelper.createDataBase();
             dbHelper.openDataBase();
             dictionary=dbHelper.getDictionary(wordlength);
-            game=new SinglePlayerGame(dictionary,wordlength);
+            game=new SinglePlayerGame(dictionary);
         } catch (Exception e){
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
@@ -71,21 +72,12 @@ implements PlayerGuessFragment.GuessListener, PlayerAnswerFragment.AnswerListene
         int id = item.getItemId();
 
         if (id == R.id.action_newgame) {
-            answers=new ArrayList<>();
-            game.NewGame();
-            /*FragmentTransaction transaction=getFragmentManager().beginTransaction();
-            Fragment topFragment=new PlayerGuessFragment();
-            Fragment bottomFragment=new AnswersFragment();
-            transaction.add(R.id.topFrame,topFragment);
-            transaction.add(R.id.bottomFrame, bottomFragment);
-            transaction.commit();*/
-            initPlayerGuessFragment();
-            initAnswersFragment();
+            startNewGame();
         }
         if (id == R.id.action_settings) {
             //set word length code
             initSettingsDialog();
-            game.NewGame();
+            game.NewGame(wordlength);
             initPlayerGuessFragment();
             initAnswersFragment();
 
@@ -94,17 +86,26 @@ implements PlayerGuessFragment.GuessListener, PlayerAnswerFragment.AnswerListene
     }
     @Override
     public void guessMade(String guess){
-        String check=game.CheckPlayerGuess(guess);
-        if (check!=null) {
+        SinglePlayerGame.GuessError check=game.CheckPlayerGuess(guess);
+        if (check!=SinglePlayerGame.GuessError.NoError) {
+        //show error text
+            String message=null;
+            switch (check){
+                case NoSuchWord:
+                    message=getString(R.string.error_no_such_word);
+                    break;
+                case WrongWordLength:
+                    message=String.format(getString(R.string.error_wrong_length),wordlength);
+            }
             AlertDialog.Builder dialog  = new AlertDialog.Builder(this);
-            dialog.setMessage(check);
+            dialog.setMessage(message);
             dialog.setPositiveButton("OK", null);
             dialog.create().show();
         } else {
-            AnswersFragment answersFragment = (AnswersFragment) getFragmentManager().findFragmentById(R.id.bottomFrame);
             Answer a=game.AnswerPlayerGuess(guess);
+            AnswersFragment answersFragment =
+                (AnswersFragment) getFragmentManager().findFragmentById(R.id.bottomFrame);
             answersFragment.AddAnswer(guess + " - " + SinglePlayerGame.PrettyAnswer(a));
-
             initPlayerAnswerFragment();
         }
     }
@@ -112,7 +113,24 @@ implements PlayerGuessFragment.GuessListener, PlayerAnswerFragment.AnswerListene
     @Override
     public void AnswerOK(String guess,Answer answer){
         game.AnswerToAI(guess, answer);
-        initPlayerGuessFragment();
+        SinglePlayerGame.GameStatus status=game.GetGameStatus();
+        switch (status) {
+            case AIIsWinner:
+                new AlertDialog.Builder(this).setMessage(getString(R.string.status_AI_wins)).show();
+                startNewGame();
+                break;
+            case Draw:
+                new AlertDialog.Builder(this).setMessage(getString(R.string.status_draw)).show();
+                startNewGame();
+                break;
+            case PlayerIsWinner:
+                new AlertDialog.Builder(this).setMessage(getString(R.string.status_player_wins)).show();
+                startNewGame();
+                break;
+            case GameIsGoingOn:
+                initPlayerGuessFragment();
+                break;
+        }
 
     }
     @Override
@@ -161,5 +179,11 @@ implements PlayerGuessFragment.GuessListener, PlayerAnswerFragment.AnswerListene
         // create an alert dialog
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
+    }
+    private void startNewGame(){
+        answers=new ArrayList<>();
+        game.NewGame(wordlength);
+        initPlayerGuessFragment();
+        initAnswersFragment();
     }
 }
